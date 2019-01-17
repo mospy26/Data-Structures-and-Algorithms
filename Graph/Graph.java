@@ -21,9 +21,9 @@ public class Graph<V> {
   this.directed = (directed == DIRECTED) ? true : false;
  }
 
-public int numVertices() {
- return this.vertexList.size();
-}
+ public int numVertices() {
+  return this.vertexList.size();
+ }
 
  public void addVertex(V element) {
   this.vertexList.add(element);
@@ -38,7 +38,7 @@ public int numVertices() {
   Edge<V> edge = new Edge<>(source, destination);
   this.adjList.get(edge.getSource()).add(edge);
   if(!this.directed && this.getEdge(edge.getDestination(), edge.getSource()) == null)
-   this.adjList.get(edge.getDestination()).add(new Edge<V>(edge.getDestination(), edge.getSource()));
+  this.adjList.get(edge.getDestination()).add(new Edge<V>(edge.getDestination(), edge.getSource()));
  }
 
  public int degree(V vertex) {
@@ -76,19 +76,19 @@ public int numVertices() {
   return this.adjList + "";
  }
 
-// testing
-public static void main(String[] args) {
+ // testing
+ public static void main(String[] args) {
   ArrayList<Integer> vertices = new ArrayList<>();
   Graph<Integer> graph = new Graph<Integer>(DIRECTED);
-try {
-  graph.addVertex(1);
-  graph.addVertex(2);
-  graph.addVertex(3);
-  graph.addVertex(4);
-  graph.addEdge(1, 2);
-  //graph.addEdge(2, 1);
-  graph.addEdge(2, 4);
-  graph.addEdge(21, 4);
+  try {
+   graph.addVertex(1);
+   graph.addVertex(2);
+   graph.addVertex(3);
+   graph.addVertex(4);
+   graph.addEdge(1, 2);
+   //graph.addEdge(2, 1);
+   graph.addEdge(2, 4);
+   graph.addEdge(21, 4);
   }
   catch(Exception v) {
    v.printStackTrace();

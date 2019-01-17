@@ -1,6 +1,6 @@
 public class AlreadyExistsException extends Exception {
 
  public AlreadyExistsException(Object element) {
-  super(element + " already exists in the graph!");
+  super("Vertex " + element + " already exists in the graph!");
  }
 }

@@ -28,6 +28,10 @@ public class Graph<V> {
   }
 }
 
+public int numVertices() {
+ return this.vertexList.size();
+}
+
  public void add_vertex(V element) throws AlreadyExistsException {
   this.vertexList.add(element);
   if(this.adjList.get(element) != null) throw new AlreadyExistsException(element);

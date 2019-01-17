@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class Graph<V> {
 
- public static final int DIRECTED = 0;
- public static final int UNDIRECTED = 1;
+ public static final boolean DIRECTED = true;
+ public static final boolean UNDIRECTED = false;
 
  private HashMap<V, ArrayList<Edge<V>>> adjList;
  private ArrayList<V> vertexList;
@@ -14,7 +14,7 @@ public class Graph<V> {
   this.adjList = new HashMap<>();
  }
 
- public Graph(ArrayList<V> vertices, ArrayList<Edge<V>> edges, int TYPE) {
+ public Graph(ArrayList<V> vertices, ArrayList<Edge<V>> edges, boolean TYPE) {
 
   this.adjList = new HashMap<>();
   this.vertexList = new ArrayList<>();
@@ -35,12 +35,25 @@ public class Graph<V> {
  }
 
  public void addEdge(V source, V destination) throws VertexDoesNotExistException {
-  System.out.print(this.adjList.get(source));
   if(this.adjList.get(source) == null) throw new VertexDoesNotExistException(source);
   if(this.adjList.get(destination) == null) throw new VertexDoesNotExistException(destination);
   Edge<V> edge = new Edge<>(source, destination);
   this.adjList.get(edge.getSource()).add(edge);
   if(!this.directed) this.adjList.get(edge.getDestination()).add(edge);
+ }
+
+ public int degree(V vertex) {
+  if(!this.directed) return this.adjList.get(vertex).size();
+  else {
+   int inDegree = 0;
+   for(V v: this.vertexList) {
+    if(v.equals(vertex)) continue;
+    for(Edge<V> elements: this.adjList.get(v)) {
+     if(elements.getDestination().equals(vertex)) { inDegree++; }
+    }
+   }
+   return this.adjList.get(vertex).size() + inDegree;
+  }
  }
 
  public String toString() {
@@ -56,7 +69,8 @@ public static void main(String[] args) {
   vertices.add(4);
   ArrayList<Edge<Integer>> edges = new ArrayList<>();
   edges.add(new Edge<Integer>(vertices.get(0), vertices.get(1)));
-  Graph<Integer> graph = new Graph<Integer>(vertices, edges, UNDIRECTED);
+  edges.add(new Edge<Integer>(vertices.get(1), vertices.get(0)));
+  Graph<Integer> graph = new Graph<Integer>(vertices, edges, DIRECTED);
   try {
    graph.addEdge(2, 4);
    graph.addEdge(21, 4);
@@ -65,5 +79,6 @@ public static void main(String[] args) {
    v.printStackTrace();
   }
   System.out.println(graph);
+  System.out.println(graph.degree(1));
  }
 }

@@ -14,36 +14,31 @@ public class Graph<V> {
   this.adjList = new HashMap<>();
  }
 
- public Graph(ArrayList<V> vertices, ArrayList<Edge<V>> edges, boolean TYPE) {
+ public Graph(boolean directed) {
 
   this.adjList = new HashMap<>();
   this.vertexList = new ArrayList<>();
-  this.directed = (TYPE == DIRECTED) ? true : false;
-
-  this.vertexList.addAll(vertices);
-  for(V v: vertices) { this.adjList.put(v, new ArrayList<Edge<V>>()); }
-  for(Edge<V> e: edges) {
-   this.adjList.get(e.getSource()).add(e);
-   if(TYPE == UNDIRECTED) this.adjList.get(e.getDestination()).add(e);
-  }
-}
+  this.directed = (directed == DIRECTED) ? true : false;
+ }
 
 public int numVertices() {
  return this.vertexList.size();
 }
 
- public void add_vertex(V element) throws AlreadyExistsException {
+ public void addVertex(V element) {
   this.vertexList.add(element);
-  if(this.adjList.get(element) != null) throw new AlreadyExistsException(element);
+  if(this.adjList.get(element) != null) return;
   this.adjList.put(element, new ArrayList<Edge<V>>());
  }
 
- public void addEdge(V source, V destination) throws VertexDoesNotExistException {
-  if(this.adjList.get(source) == null) throw new VertexDoesNotExistException(source);
-  if(this.adjList.get(destination) == null) throw new VertexDoesNotExistException(destination);
+ public void addEdge(V source, V destination) throws VertexNotFoundException {
+  if(this.adjList.get(source) == null) throw new VertexNotFoundException(source);
+  if(this.adjList.get(destination) == null) throw new VertexNotFoundException(destination);
+  if(this.getEdge(source, destination) != null) return;
   Edge<V> edge = new Edge<>(source, destination);
   this.adjList.get(edge.getSource()).add(edge);
-  if(!this.directed) this.adjList.get(edge.getDestination()).add(edge);
+  if(!this.directed && this.getEdge(edge.getDestination(), edge.getSource()) == null)
+   this.adjList.get(edge.getDestination()).add(new Edge<V>(edge.getDestination(), edge.getSource()));
  }
 
  public int degree(V vertex) {
@@ -60,6 +55,23 @@ public int numVertices() {
   }
  }
 
+ public int numEdges() {
+  int sumEdges = 0;
+  for(V v: this.vertexList) {
+   sumEdges += degree(v);
+  }
+  return sumEdges/2;
+ }
+
+ public Edge<V> getEdge(V v1, V v2) {
+  for(Edge<V> e: this.adjList.get(v1)) {
+   if(e.getDestination().equals(v2)) {
+    return e;
+   }
+  }
+  return null;
+ }
+
  public String toString() {
   return this.adjList + "";
  }
@@ -67,21 +79,21 @@ public int numVertices() {
 // testing
 public static void main(String[] args) {
   ArrayList<Integer> vertices = new ArrayList<>();
-  vertices.add(1);
-  vertices.add(2);
-  vertices.add(3);
-  vertices.add(4);
-  ArrayList<Edge<Integer>> edges = new ArrayList<>();
-  edges.add(new Edge<Integer>(vertices.get(0), vertices.get(1)));
-  edges.add(new Edge<Integer>(vertices.get(1), vertices.get(0)));
-  Graph<Integer> graph = new Graph<Integer>(vertices, edges, DIRECTED);
-  try {
-   graph.addEdge(2, 4);
-   graph.addEdge(21, 4);
+  Graph<Integer> graph = new Graph<Integer>(DIRECTED);
+try {
+  graph.addVertex(1);
+  graph.addVertex(2);
+  graph.addVertex(3);
+  graph.addVertex(4);
+  graph.addEdge(1, 2);
+  //graph.addEdge(2, 1);
+  graph.addEdge(2, 4);
+  graph.addEdge(21, 4);
   }
-  catch(VertexDoesNotExistException v) {
+  catch(Exception v) {
    v.printStackTrace();
   }
+  System.out.println(graph.getEdge(1, 2));
   System.out.println(graph);
   System.out.println(graph.degree(1));
  }

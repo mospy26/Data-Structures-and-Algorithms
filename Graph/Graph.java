@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class Graph<V> {
+public class Graph<V> implements GraphClass<V> {
 
  public static final boolean DIRECTED = true;
  public static final boolean UNDIRECTED = false;

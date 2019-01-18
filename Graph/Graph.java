@@ -12,17 +12,25 @@ public class Graph<V> {
 
  public Graph() {
   this.adjList = new HashMap<>();
+  this.vertexList = new ArrayList<>();
+  this.directed = false;
  }
 
  public Graph(boolean directed) {
-
-  this.adjList = new HashMap<>();
-  this.vertexList = new ArrayList<>();
+  this();
   this.directed = (directed == DIRECTED) ? true : false;
  }
 
  public int numVertices() {
   return this.vertexList.size();
+ }
+
+ public int numEdges() {
+  int sumEdges = 0;
+  for(V v: this.vertexList) {
+   sumEdges += degree(v);
+  }
+  return sumEdges/2;
  }
 
  public void addVertex(V element) {
@@ -42,7 +50,10 @@ public class Graph<V> {
  }
 
  public int degree(V vertex) {
+
   if(!this.directed) return this.adjList.get(vertex).size();
+
+  //for directed graphs
   else {
    int inDegree = 0;
    for(V v: this.vertexList) {
@@ -53,14 +64,6 @@ public class Graph<V> {
    }
    return this.adjList.get(vertex).size() + inDegree;
   }
- }
-
- public int numEdges() {
-  int sumEdges = 0;
-  for(V v: this.vertexList) {
-   sumEdges += degree(v);
-  }
-  return sumEdges/2;
  }
 
  public Edge<V> getEdge(V v1, V v2) {
@@ -86,7 +89,7 @@ public class Graph<V> {
    graph.addVertex(3);
    graph.addVertex(4);
    graph.addEdge(1, 2);
-   //graph.addEdge(2, 1);
+   graph.addEdge(2, 1);
    graph.addEdge(2, 4);
    graph.addEdge(21, 4);
   }
@@ -95,6 +98,6 @@ public class Graph<V> {
   }
   System.out.println(graph.getEdge(1, 2));
   System.out.println(graph);
-  System.out.println(graph.degree(1));
+  System.out.println(graph.degree(2));
  }
 }

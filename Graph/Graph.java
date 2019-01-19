@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Graph<V> implements GraphClass<V> {
 
@@ -75,13 +76,49 @@ public class Graph<V> implements GraphClass<V> {
   return null;
  }
 
+ public List<V> BFS(V start, V end) {
+
+  /*
+   * 1. Add the starting vertex to the list "next layer"
+   * 2. Mark every vertex except starting as "not seen"
+   * 3. while the current layer is not empty, get every neighbour of every vertex in the current layer.
+   * 4. The current layer is the next layer now.
+   */
+
+   List<V> layers = new ArrayList<>();
+   List<V> currentLayer = new ArrayList<>();
+   currentLayer.add(start); //step 1
+   List<V> nextLayer = new ArrayList<>();
+   HashMap<V, Boolean> seen = new HashMap<>();
+   seen.put(start, true); //step 2
+   for(V vertices: this.vertexList) { if(!vertices.equals(start)) seen.put(vertices, false); }
+
+   while(!currentLayer.isEmpty()) {
+    layers.addAll(currentLayer);
+    for(V current: currentLayer) {
+     for(Edge<V> outgoingEdges: this.adjList.get(current)) {
+      V neighbours = outgoingEdges.getDestination();
+      if(!seen.get(neighbours)) {
+       nextLayer.add(neighbours);
+       seen.put(neighbours, true);
+      }
+     }
+    }
+    currentLayer.clear();
+    currentLayer.addAll(nextLayer);
+    nextLayer.clear();
+   }
+
+   return layers;
+
+ }
+
  public String toString() {
   return this.adjList + "";
  }
 
  // testing
  public static void main(String[] args) {
-  ArrayList<Integer> vertices = new ArrayList<>();
   Graph<Integer> graph = new Graph<Integer>(DIRECTED);
   try {
    graph.addVertex(1);
@@ -99,5 +136,22 @@ public class Graph<V> implements GraphClass<V> {
   System.out.println(graph.getEdge(1, 2));
   System.out.println(graph);
   System.out.println(graph.degree(2));
+
+  Graph<Integer> g = new Graph<Integer>(UNDIRECTED);
+  try {
+   g.addVertex(1);
+   g.addVertex(2);
+   g.addVertex(3);
+   g.addVertex(4);
+   g.addVertex(5);
+   g.addEdge(1, 2);
+   g.addEdge(2, 3);
+   g.addEdge(1, 4);
+   g.addEdge(4, 5);
+  }
+  catch(Exception e) {
+   e.printStackTrace();
+  }
+  System.out.println(g.BFS(1,5));
  }
 }

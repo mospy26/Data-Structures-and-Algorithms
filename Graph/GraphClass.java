@@ -25,3 +25,8 @@ public interface GraphClass<V> {
  //and return a list containing all vertices visited in doing the search
  public List<V> BFS(V start, V end);
 }
+
+//Usage:
+// Create a new Graph, default is UNDIRECTED, can use constructor arguments:
+// set as Graph.DIRECTED to make it directed.
+// Edges have source, destination -> weight and this is how it is stored in adj lists.

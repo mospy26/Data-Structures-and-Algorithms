@@ -24,6 +24,9 @@ public interface GraphClass<V> {
  //perform a breadth first search from one specified vertex to another
  //and return a list containing all vertices visited in doing the search
  public List<V> BFS(V start, V end);
+
+ // return a new graph which is the transitive closure of the current graph using BFS
+ public Graph<V> BFSTransitiveClosure(V start);
 }
 
 //Usage:

@@ -23,6 +23,13 @@ public class Graph<V> implements GraphClass<V> {
   this.directed = (directed == DIRECTED) ? true : false;
  }
 
+ // get a copy of the current graph
+ public Graph(Graph<V> graph) {
+  this(graph.directed);
+  this.adjList = new HashMap<>(graph.adjList);
+  this.vertexList = new ArrayList<>(graph.vertexList);
+ }
+
  public int numVertices() {
   return this.vertexList.size();
  }
@@ -99,7 +106,6 @@ public class Graph<V> implements GraphClass<V> {
     for(V current: currentLayer) {
      for(Edge<V> outgoingEdges: this.adjList.get(current)) {
       V neighbours = outgoingEdges.getDestination();
-      System.out.println(neighbours);
       if(neighbours == end) {
        layers.add(neighbours);
        seen.put(neighbours, true);
@@ -115,10 +121,39 @@ public class Graph<V> implements GraphClass<V> {
     currentLayer.addAll(nextLayer);
     nextLayer.clear();
    }
-
    return layers;
-
  }
+
+ public Graph<V> BFSTransitiveClosure(V start) {
+
+  Graph<V> newGraph = new Graph<>(this);
+  V newStartVertex = newGraph.vertexList.get(this.vertexList.indexOf(start));
+  List<V> layers = new ArrayList<>();
+  List<V> currentLayer = new ArrayList<>();
+  currentLayer.add(start); //step 1
+  List<V> nextLayer = new ArrayList<>();
+  HashMap<V, Boolean> seen = new HashMap<>();
+  seen.put(start, true); //step 2
+  for(V vertices: this.vertexList) { if(!vertices.equals(start)) seen.put(vertices, false); }
+
+  while(!currentLayer.isEmpty()) {
+   layers.addAll(currentLayer);
+   for(V current: currentLayer) {
+    for(Edge<V> outgoingEdges: this.adjList.get(current)) {
+     V neighbours = outgoingEdges.getDestination();
+     if(!seen.get(neighbours)) {
+      nextLayer.add(neighbours);
+      seen.put(neighbours, true);
+      newGraph.addEdge(newStartVertex, neighbours);
+     }
+    }
+   }
+   currentLayer.clear();
+   currentLayer.addAll(nextLayer);
+   nextLayer.clear();
+  }
+  return newGraph;
+}
 
  public String toString() {
   return this.adjList + "";
@@ -127,45 +162,34 @@ public class Graph<V> implements GraphClass<V> {
  // testing
  public static void main(String[] args) {
   Graph<Integer> graph = new Graph<Integer>(DIRECTED);
-  try {
-   graph.addVertex(1);
-   graph.addVertex(2);
-   graph.addVertex(3);
-   graph.addVertex(4);
-   graph.addVertex(5);
-   graph.addVertex(6);
-   graph.addEdge(1, 2);
-   graph.addEdge(2, 3);
-   graph.addEdge(3, 4);
-   graph.addEdge(1, 4);
-   graph.addEdge(1, 5);
-   graph.addEdge(5, 6);
-   graph.addEdge(6, 3);
-  }
-  catch(Exception v) {
-   v.printStackTrace();
-  }
+  graph.addVertex(1);
+  graph.addVertex(2);
+  graph.addVertex(3);
+  graph.addVertex(4);
+  graph.addVertex(5);
+  graph.addVertex(6);
+  graph.addEdge(1, 2);
+  graph.addEdge(2, 3);
+  graph.addEdge(3, 4);
+  graph.addEdge(1, 4);
+  graph.addEdge(1, 5);
+  graph.addEdge(5, 6);
+  graph.addEdge(6, 3);
   System.out.println(graph.getEdge(1, 2));
-  System.out.println(graph);
-  System.out.println(graph.BFS(1, 3));
+  //System.out.println(graph);
+  System.out.println(graph.BFSTransitiveClosure(1));
 
   Graph<Integer> g = new Graph<Integer>(UNDIRECTED);
-  try {
-   g.addVertex(1);
-   g.addVertex(2);
-   g.addVertex(3);
-   g.addVertex(4);
-   g.addVertex(5);
-   g.addEdge(1, 2);
-   g.addEdge(2, 3);
-   g.addEdge(1, 4);
-   g.addEdge(4, 5);
-  }
-  catch(Exception e) {
-   e.printStackTrace();
-  }
-  System.out.println(g.BFS(1,5));
-
+  g.addVertex(1);
+  g.addVertex(2);
+  g.addVertex(3);
+  g.addVertex(4);
+  g.addVertex(5);
+  g.addEdge(1, 2);
+  g.addEdge(2, 3);
+  g.addEdge(1, 4);
+  g.addEdge(4, 5);
+  System.out.println(g.BFSTransitiveClosure(1));
  }
 
 }

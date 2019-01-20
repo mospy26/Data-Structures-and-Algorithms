@@ -99,6 +99,12 @@ public class Graph<V> implements GraphClass<V> {
     for(V current: currentLayer) {
      for(Edge<V> outgoingEdges: this.adjList.get(current)) {
       V neighbours = outgoingEdges.getDestination();
+      System.out.println(neighbours);
+      if(neighbours == end) {
+       layers.add(neighbours);
+       seen.put(neighbours, true);
+       return layers;
+      }
       if(!seen.get(neighbours)) {
        nextLayer.add(neighbours);
        seen.put(neighbours, true);
@@ -126,17 +132,22 @@ public class Graph<V> implements GraphClass<V> {
    graph.addVertex(2);
    graph.addVertex(3);
    graph.addVertex(4);
+   graph.addVertex(5);
+   graph.addVertex(6);
    graph.addEdge(1, 2);
-   graph.addEdge(2, 1);
-   graph.addEdge(2, 4);
-   graph.addEdge(21, 4);
+   graph.addEdge(2, 3);
+   graph.addEdge(3, 4);
+   graph.addEdge(1, 4);
+   graph.addEdge(1, 5);
+   graph.addEdge(5, 6);
+   graph.addEdge(6, 3);
   }
   catch(Exception v) {
    v.printStackTrace();
   }
   System.out.println(graph.getEdge(1, 2));
   System.out.println(graph);
-  System.out.println(graph.degree(2));
+  System.out.println(graph.BFS(1, 3));
 
   Graph<Integer> g = new Graph<Integer>(UNDIRECTED);
   try {

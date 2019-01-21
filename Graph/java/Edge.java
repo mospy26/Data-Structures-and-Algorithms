@@ -19,6 +19,7 @@ public class Edge<V> {
  public int getWeight() { return this.weight; }
 
  public String toString() {
-  return "(" + this.source + "," + this.destination + " -> " + this.weight + ")";
+  if(this.weight == 0) return "(" + this.source + "," + this.destination + ")";
+  else return "(" + this.source + "," + this.destination + " -> " + this.weight + ")";
  }
 }

@@ -27,6 +27,10 @@ public interface GraphClass<V> {
 
  // return a new graph which is the transitive closure of the current graph using BFS
  public Graph<V> BFSTransitiveClosure(V start);
+
+ //perform a depth first search from one specified vertex to another
+ //and return a list containing all vertices visited in doing the search
+ public List<V> DFS(V start, V end);
 }
 
 //Usage:

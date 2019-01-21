@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.AbstractMap;
 import java.util.Scanner;
 import java.util.stream.*;
+import java.util.Stack;
 
 public class Graph<V> implements GraphClass<V> {
 
@@ -162,7 +163,41 @@ public class Graph<V> implements GraphClass<V> {
    nextLayer.clear();
   }
   return newGraph;
-}
+ }
+
+ public List<V> DFS(V start, V end) {
+
+  /*
+   * 1. Mark the start as seen
+   * 2. For each edge, if that edge has not been seen, perform a DFS on that vertex which was the end of that edge
+   *
+   *
+   */
+
+   List<V> vertices = new ArrayList<>();
+   Stack<V> stack = new Stack<>();
+   stack.push(start);
+   HashMap<V, Boolean> seen = new HashMap<>();
+
+   for(V v: this.vertexList) { seen.put(v, false); }
+   while(!stack.empty()) {
+    V vertex = stack.pop();
+    if(!seen.get(vertex)) {
+     vertices.add(vertex);
+     seen.put(vertex, true);
+    }
+    for(Edge<V> adjEdges: this.adjList.get(vertex)) {
+     if(!seen.get(adjEdges.getDestination())) {
+      stack.push(adjEdges.getDestination());
+     }
+     if(adjEdges.getDestination().equals(end)) {
+      vertices.add(end);
+      return vertices;
+     }
+    }
+   }
+   return vertices;
+  }
 
  public String toString() {
   return this.adjList + "";
@@ -184,9 +219,8 @@ public class Graph<V> implements GraphClass<V> {
   graph.addEdge(1, 5);
   graph.addEdge(5, 6);
   graph.addEdge(6, 3);
-  System.out.println(graph.getEdge(1, 2));
-  //System.out.println(graph);
-  System.out.println(graph.BFSTransitiveClosure(1));
+  //System.out.println(graph.getEdge(1, 2));
+  System.out.println(graph.DFS(1, 6));
 
   Graph<Integer> g = new Graph<Integer>(UNDIRECTED);
   g.addVertex(1);
@@ -199,7 +233,7 @@ public class Graph<V> implements GraphClass<V> {
   g.addEdge(1, 4);
   g.addEdge(4, 5);
   System.out.println(g.BFSTransitiveClosure(1));
-  System.out.println(g);
+  System.out.println(g.DFS(1,5));
  }
 
 }

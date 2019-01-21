@@ -1,7 +1,10 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.AbstractMap;
 import java.util.Scanner;
+import java.util.stream.*;
 
 public class Graph<V> implements GraphClass<V> {
 
@@ -26,8 +29,14 @@ public class Graph<V> implements GraphClass<V> {
  // get a copy of the current graph
  public Graph(Graph<V> graph) {
   this(graph.directed);
-  this.adjList = new HashMap<>(graph.adjList);
-  this.vertexList = new ArrayList<>(graph.vertexList);
+  this.adjList = new HashMap<>();
+  this.adjList = (HashMap<V, ArrayList<Edge<V>>>) graph.adjList.entrySet()
+    .stream()
+    .map(x -> new AbstractMap.SimpleEntry<V, ArrayList<Edge<V>>>(x.getKey(), new ArrayList<Edge<V>>(x.getValue())))
+    .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+  this.vertexList = (ArrayList<V>) graph.vertexList
+    .stream()
+    .collect(Collectors.toList());
  }
 
  public int numVertices() {
@@ -190,6 +199,7 @@ public class Graph<V> implements GraphClass<V> {
   g.addEdge(1, 4);
   g.addEdge(4, 5);
   System.out.println(g.BFSTransitiveClosure(1));
+  System.out.println(g);
  }
 
 }
